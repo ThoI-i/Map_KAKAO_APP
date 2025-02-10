@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import LoginButton from './components/LoginButton';
 import SearchPlaces from './components/SearchPlaces';
 import Favorites from './components/Favorites';
+import MapView from './components/Mapview'
 
 function App() {
   // 1단계: 카카오 SDK 초기화
@@ -19,6 +20,7 @@ function App() {
       <LoginButton />
       <SearchPlaces />  {/* 장소 검색 기능 */}
       <Favorites />  {/* 즐겨찾기 기능 추가 */}
+      <MapView />  {/* 지도 기능 추가 */}
     </div>
   );
 }
