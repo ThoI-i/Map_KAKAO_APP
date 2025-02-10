@@ -11,7 +11,7 @@ function App() {
 
   useEffect(() => {
     if (window.Kakao && !window.Kakao.isInitialized()) {
-      window.Kakao.init('e69b47d018fbeaf74a60b7a5d68e2606');
+      window.Kakao.init('0662e04cab14635814611f285aacb5f4');
       console.log('Kakao SDK Initialized');
     }
   }, []);
@@ -19,7 +19,7 @@ function App() {
   const renderContent = () => {
     switch (activeTab) {
       case 'map':
-        return <MapView />;
+        return <MapView />;  // 지도를 표시하는 컴포넌트
       case 'search':
         return <SearchPlaces />;
       case 'favorites':
