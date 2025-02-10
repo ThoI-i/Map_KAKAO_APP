@@ -1,39 +1,41 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 function MapView() {
-  useEffect(() => {
-    // 카카오 지도 API가 로드되었는지 바로 확인
-    if (window.kakao && window.kakao.maps) {
-      console.log('카카오 지도 API 로드 완료');
+  const mapRef = useRef(null);  // 지도 객체를 참조하기 위한 ref
 
-      // 지도가 중복 생성되지 않도록 기존 객체를 제거하고 다시 생성
+  useEffect(() => {
+    if (window.kakao && window.kakao.maps) {
       const container = document.getElementById('map');
+
+      // 지도 초기 설정
       const options = {
-        center: new window.kakao.maps.LatLng(37.5665, 126.9780),
+        center: new window.kakao.maps.LatLng(37.5665, 126.9780),  // 서울 좌표
         level: 3,
       };
 
-      // 지도 생성
-      const map = new window.kakao.maps.Map(container, options);
-      console.log('지도 객체 생성 완료:', map);
+      // 지도 생성 및 객체 저장 (초기 1회만 실행)
+      if (!mapRef.current) {
+        mapRef.current = new window.kakao.maps.Map(container, options);
+        console.log('지도 객체 생성 완료:', mapRef.current);
+      }
 
-      // 페이지 확대/축소를 막는 휠 이벤트 처리
-      const handleWheel = (e) => {
+      // 지도 이벤트 추가: 확대/축소 후 상태 유지
+      window.addEventListener('wheel', (e) => {
         if (e.ctrlKey) {
-          e.preventDefault();  // Ctrl + 휠 시 페이지 확대/축소 방지
+          e.preventDefault();  // Ctrl + 휠 시 페이지 확대 방지
         }
-      };
+      }, { passive: false });
 
-      // 페이지 전체에 대한 휠 이벤트만 처리
-      window.addEventListener('wheel', handleWheel, { passive: false });
-
+      // 컴포넌트가 언마운트될 때 이벤트 제거
       return () => {
-        window.removeEventListener('wheel', handleWheel);
+        window.removeEventListener('wheel', (e) => {
+          if (e.ctrlKey) e.preventDefault();
+        });
       };
     } else {
       console.error('카카오 지도 API가 로드되지 않았습니다.');
     }
-  }, []);  // 빈 배열로 설정해 한 번만 실행되게 설정
+  }, []);
 
   return <div id="map" style={styles.map}></div>;
 }
