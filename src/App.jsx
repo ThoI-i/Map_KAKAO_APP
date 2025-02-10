@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import LoginButton from './components/LoginButton';
+import SearchPlaces from './components/SearchPlaces';
 
 function App() {
   // 1단계: 카카오 SDK 초기화
@@ -15,6 +16,7 @@ function App() {
     <div>
       <h1>카카오 API 예제</h1>
       <LoginButton />
+      <SearchPlaces />  {/* 장소 검색 기능 */}
     </div>
   );
 }
