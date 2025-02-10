@@ -1,7 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Modal from './Modal';  // 모달 컴포넌트 import
 
 function MapView() {
   const mapRef = useRef(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [clickData, setClickData] = useState({ lat: 0, lng: 0, address: '' });
 
   useEffect(() => {
     if (window.kakao && window.kakao.maps) {
@@ -24,6 +27,21 @@ function MapView() {
 
         // 확대/축소 이벤트 처리
         kakao.maps.event.addListener(mapRef.current, 'zoom_changed', handleZoomChange);
+
+        // 지도 클릭 이벤트 처리 (추가 기능)
+        kakao.maps.event.addListener(mapRef.current, 'click', async (mouseEvent) => {
+          const latLng = mouseEvent.latLng;
+
+          // 클릭 위치 정보 설정
+          const positionData = {
+            lat: latLng.getLat(),
+            lng: latLng.getLng(),
+            address: await getAddressFromCoords(latLng),
+          };
+
+          setClickData(positionData);  // 클릭 데이터 저장
+          setModalVisible(true);  // 모달 열기
+        });
       }
 
       // 페이지 확대 방지 이벤트 추가
@@ -46,9 +64,22 @@ function MapView() {
   // 확대/축소 이벤트 핸들러
   const handleZoomChange = () => {
     if (!mapRef.current) return;
-
     console.log('확대/축소 이벤트 발생');
     mapRef.current.relayout();  // 화면 즉시 갱신
+  };
+
+  // 클릭한 좌표로 주소를 가져오는 함수
+  const getAddressFromCoords = (latLng) => {
+    return new Promise((resolve) => {
+      const geocoder = new window.kakao.maps.services.Geocoder();
+      geocoder.coord2Address(latLng.getLng(), latLng.getLat(), (result, status) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          resolve(result[0].address.address_name);  // 주소 반환
+        } else {
+          resolve('주소 정보를 불러올 수 없음');
+        }
+      });
+    });
   };
 
   // 캐시에서 지도 설정을 로드하는 함수
@@ -88,7 +119,16 @@ function MapView() {
     }
   };
 
-  return <div id="map" style={styles.map}></div>;
+  return (
+    <div id="map" style={styles.map}>
+      {modalVisible && (
+        <Modal
+          clickData={clickData}
+          onClose={() => setModalVisible(false)}
+        />
+      )}
+    </div>
+  );
 }
 
 const styles = {
