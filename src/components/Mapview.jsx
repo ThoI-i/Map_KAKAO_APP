@@ -9,13 +9,27 @@ function MapView() {
       // 지도가 중복 생성되지 않도록 기존 객체를 제거하고 다시 생성
       const container = document.getElementById('map');
       const options = {
-        center: new window.kakao.maps.LatLng(37.5665, 126.9780),  // 서울 좌표
+        center: new window.kakao.maps.LatLng(37.5665, 126.9780),
         level: 3,
       };
 
       // 지도 생성
       const map = new window.kakao.maps.Map(container, options);
       console.log('지도 객체 생성 완료:', map);
+
+      // 페이지 확대/축소를 막는 휠 이벤트 처리
+      const handleWheel = (e) => {
+        if (e.ctrlKey) {
+          e.preventDefault();  // Ctrl + 휠 시 페이지 확대/축소 방지
+        }
+      };
+
+      // 페이지 전체에 대한 휠 이벤트만 처리
+      window.addEventListener('wheel', handleWheel, { passive: false });
+
+      return () => {
+        window.removeEventListener('wheel', handleWheel);
+      };
     } else {
       console.error('카카오 지도 API가 로드되지 않았습니다.');
     }
@@ -26,9 +40,12 @@ function MapView() {
 
 const styles = {
   map: {
-    width: '100%',     // 페이지에서 너비 전체로 설정
-    height: '100%',    // 높이도 전체로 설정
-    position: 'relative',  // 다른 요소와의 레이아웃 겹침 방지
+    width: '100vw',
+    height: '100vh',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    zIndex: 0,
   },
 };
 

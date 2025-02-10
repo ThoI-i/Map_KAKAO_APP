@@ -35,7 +35,6 @@ function App() {
     <div style={{ display: 'flex' }}>
       <Sidebar onTabChange={setActiveTab} />
       <div style={{ marginLeft: '200px', padding: '20px', width: '100%' }}>
-        <h1>카카오 API 예제</h1>
         {renderContent()}  {/* 탭에 따라 컴포넌트 변경 */}
       </div>
     </div>

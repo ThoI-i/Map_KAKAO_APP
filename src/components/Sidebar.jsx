@@ -25,16 +25,10 @@ const styles = {
     left: 0,
     top: 0,
     boxShadow: '2px 0 5px rgba(0, 0, 0, 0.5)',
+    zIndex: 1,  // 지도 위에 위치
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-  },
-  title: {
-    marginBottom: '20px',
-  },
-  menu: {
-    listStyleType: 'none',
-    padding: 0,
   },
   menuItem: {
     padding: '10px 0',
