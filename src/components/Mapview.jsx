@@ -3,31 +3,36 @@ import ValidationHandler from './ValidationHandler';
 
 function MapView() {
   const mapRef = useRef(null);
+  const drawingManagerRef = useRef(null);
 
   useEffect(() => {
     if (window.kakao && window.kakao.maps) {
       const container = document.getElementById('map');
 
-      // 로컬 스토리지에서 마지막 위치 불러오기
       const cachedMapData = loadMapCenterCache();
       const options = cachedMapData || {
-        center: new window.kakao.maps.LatLng(37.5665, 126.9780),  // 기본 서울 좌표
+        center: new window.kakao.maps.LatLng(37.5665, 126.9780),
         level: 3,
       };
 
       if (!mapRef.current) {
-        // 지도 객체 생성
         mapRef.current = new window.kakao.maps.Map(container, options);
 
-        // 중심 변경 이벤트 리스너 등록 (좌표 저장)
+        // DrawingManager 초기화
+        drawingManagerRef.current = new kakao.maps.drawing.DrawingManager({
+          map: mapRef.current,
+          drawingMode: ['marker'],
+          markerOptions: {
+            draggable: true,
+            removable: true,
+          },
+        });
+
         kakao.maps.event.addListener(mapRef.current, 'center_changed', saveMapCenterCache);
       }
 
-      // Ctrl+휠 확대 방지
       window.addEventListener('wheel', (e) => {
-        if (e.ctrlKey) {
-          e.preventDefault();
-        }
+        if (e.ctrlKey) e.preventDefault();
       }, { passive: false });
 
       return () => {
@@ -38,7 +43,6 @@ function MapView() {
     }
   }, []);
 
-  // 로컬 스토리지에서 중심 좌표 불러오기
   const loadMapCenterCache = () => {
     try {
       const cache = localStorage.getItem('mapCenter');
@@ -55,27 +59,16 @@ function MapView() {
     return null;
   };
 
-  // 중심 좌표를 로컬 스토리지에 저장하는 함수
   const saveMapCenterCache = () => {
     if (!mapRef.current) return;
 
     const center = mapRef.current.getCenter();
-    const centerData = {
-      lat: center.getLat(),
-      lng: center.getLng(),
-    };
-
-    try {
-      localStorage.setItem('mapCenter', JSON.stringify(centerData));
-      console.log('지도 중심 좌표 저장 완료:', centerData);
-    } catch (error) {
-      console.error('지도 중심 좌표 저장 실패:', error);
-    }
+    localStorage.setItem('mapCenter', JSON.stringify({ lat: center.getLat(), lng: center.getLng() }));
   };
 
   return (
     <div id="map" style={styles.map}>
-      <ValidationHandler mapRef={mapRef} />
+      <ValidationHandler mapRef={mapRef} drawingManagerRef={drawingManagerRef} />
     </div>
   );
 }

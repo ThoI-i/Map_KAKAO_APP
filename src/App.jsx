@@ -11,7 +11,7 @@ function App() {
 
   useEffect(() => {
     if (window.Kakao && !window.Kakao.isInitialized()) {
-      window.Kakao.init('0662e04cab14635814611f285aacb5f4');
+      window.Kakao.init('2fab7c6ab498c232293fca173c844800');
       console.log('Kakao SDK Initialized');
     }
   }, []);
