@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import ValidationHandler from './ValidationHandler';
+import { getMarkerColor } from './MarkerColor'; // ✅ 마커 색상 적용 함수 추가
 
 function MapView() {
   const mapRef = useRef(null);
@@ -21,9 +22,8 @@ function MapView() {
     }
   }, []);
 
-  // ✅ 로컬스토리지에서 마커 불러와 지도에 표시
+  // ✅ 저장된 마커 불러와 지도에 표시
   const updateMarkers = () => {
-    // marker1, marker2 ... 이런 식으로 저장된 모든 키 가져오기
     const storedKeys = Object.keys(localStorage).filter(key => key.startsWith('marker'));
     const storedMarkers = storedKeys.map(key => JSON.parse(localStorage.getItem(key)));
 
@@ -32,12 +32,11 @@ function MapView() {
 
     // 새로운 마커 표시
     const newMarkers = storedMarkers.map(({ lat, lng, color }) => {
-      const marker = new kakao.maps.Marker({
+      return new kakao.maps.Marker({
         position: new kakao.maps.LatLng(lat, lng),
         map: mapRef.current,
+        image: getMarkerColor(color), // ✅ SVG 기반 색상 적용
       });
-
-      return marker;
     });
 
     setMarkers(newMarkers);

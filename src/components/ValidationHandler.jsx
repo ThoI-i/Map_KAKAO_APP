@@ -4,7 +4,6 @@ import Modal from './Modal';
 function ValidationHandler({ mapRef, updateMarkers }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [clickData, setClickData] = useState({ lat: 0, lng: 0, address: '', color: '' });
-  const [tempMarker, setTempMarker] = useState(null); // 모달이 열리는 동안만 유지되는 임시 마커
 
   useEffect(() => {
     if (mapRef.current) {
@@ -16,25 +15,11 @@ function ValidationHandler({ mapRef, updateMarkers }) {
           lat: latLng.getLat(),
           lng: latLng.getLng(),
           address: await getAddressFromCoords(latLng),
-          color: '', // 기본 색상 (모달에서 선택)
+          color: '', // 기본 색상 (사용자가 선택)
         };
 
         setClickData(positionData);
         setModalVisible(true);
-
-        // ✅ 기존 임시 마커 삭제
-        if (tempMarker) {
-          tempMarker.setMap(null);
-          setTempMarker(null);
-        }
-
-        // ✅ 새 임시 마커 표시
-        const marker = new kakao.maps.Marker({
-          position: latLng,
-          map: mapRef.current,
-        });
-
-        setTempMarker(marker);
       });
     }
   }, [mapRef]);
@@ -72,28 +57,7 @@ function ValidationHandler({ mapRef, updateMarkers }) {
     console.log('로컬스토리지 저장 완료:', localStorage.getItem(nextMarkerKey));
 
     setModalVisible(false);
-
-    // ✅ 임시 마커 삭제
-    if (tempMarker) {
-      tempMarker.setMap(null);
-      setTempMarker(null);
-    }
-
     updateMarkers(); // ✅ 저장 후 마커 업데이트
-  };
-
-  // ✅ 취소 버튼 클릭 시 임시 마커 제거
-  const handleCancel = () => {
-    console.log('취소 버튼 클릭됨, 임시 마커 삭제');
-
-    if (tempMarker) {
-      tempMarker.setMap(null); // ✅ 지도에서 제거
-      setTempMarker(null); // ✅ 상태 초기화
-    }
-
-    setModalVisible(false);
-
-    updateMarkers(); // ✅ 취소 후에도 저장된 마커 다시 표시
   };
 
   return (
@@ -101,8 +65,8 @@ function ValidationHandler({ mapRef, updateMarkers }) {
       {modalVisible && (
         <Modal
           clickData={clickData}
-          onClose={handleCancel}
-          onSave={handleSave}
+          onClose={() => setModalVisible(false)}
+          onSave={handleSave} // ✅ 색상 저장
         />
       )}
     </>
