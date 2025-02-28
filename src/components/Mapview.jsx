@@ -31,12 +31,12 @@ function MapView() {
     // ✅ 기존 마커 삭제
     markers.forEach(marker => marker.setMap(null));
 
-    // ✅ 저장된 마커 표시
-    const newMarkers = storedMarkers.map(({ lat, lng, color }) => {
+    // ✅ 저장된 마커 표시 (색상 & 아이콘 반영)
+    const newMarkers = storedMarkers.map(({ lat, lng, color, icon }) => {
       return new kakao.maps.Marker({
         position: new kakao.maps.LatLng(lat, lng),
         map: mapRef.current,
-        image: getCustomMarker(color),
+        image: getCustomMarker(color, icon),
       });
     });
 

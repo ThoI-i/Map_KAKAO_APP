@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Modal.css';
 
-function Modal({ clickData, onClose, onSave, onColorChange }) {
+function Modal({ clickData, onClose, onSave, onColorChange, onIconChange }) {
   const [selectedColor, setSelectedColor] = useState(clickData.color || '#36c991');
-  const [selectedIcon, setSelectedIcon] = useState('★'); // ✅ 기본 아이콘 설정
+  const [selectedIcon, setSelectedIcon] = useState(clickData.icon || '★'); // ✅ 기본 아이콘도 설정
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -26,10 +26,11 @@ function Modal({ clickData, onClose, onSave, onColorChange }) {
 
   const handleIconSelect = (icon) => {
     setSelectedIcon(icon);
+    onIconChange(icon); // ✅ 아이콘 변경 핸들러 추가
   };
 
   const handleSave = () => {
-    onSave(selectedColor, selectedIcon);
+    onSave(selectedColor, selectedIcon); // ✅ 선택한 색상과 아이콘을 저장
     alert('즐겨찾기에 저장되었습니다!');
   };
 
@@ -40,7 +41,6 @@ function Modal({ clickData, onClose, onSave, onColorChange }) {
         <p><strong>좌표:</strong> {clickData.lat}, {clickData.lng}</p>
         <p><strong>주소:</strong> {clickData.address || '주소 정보를 불러올 수 없습니다.'}</p>
 
-        {/* ✅ 색상 선택 버튼 */}
         <div className="color-selection">
           {['#ff7fbf', '#c9366e', '#007bff', '#36c991', '#a46ac8'].map((color) => (
             <button
@@ -52,13 +52,12 @@ function Modal({ clickData, onClose, onSave, onColorChange }) {
           ))}
         </div>
 
-        {/* ✅ 아이콘 선택 버튼 */}
         <div className="icon-selection">
           {['★', '●', '◆', '■', '▲', '▼', '♥', '♬'].map((icon) => (
             <button
               key={icon}
               className={`icon-button ${selectedIcon === icon ? 'active' : ''}`}
-              style={{ backgroundColor: selectedColor, color: 'white' }} // ✅ 배경은 선택한 색상, 아이콘은 흰색
+              style={{ backgroundColor: selectedColor, color: 'white' }}
               onClick={() => handleIconSelect(icon)}
             >
               {icon}
