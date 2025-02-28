@@ -1,12 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Modal.css';
 
 function Modal({ clickData, onClose, onSave, onColorChange }) {
   const [selectedColor, setSelectedColor] = useState(clickData.color || '#36c991');
+  const modalRef = useRef(null); // ✅ 모달창 감지를 위한 ref 추가
+
+  useEffect(() => {
+    // ✅ 모달창 외부 클릭 감지 함수
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onClose(); // ✅ 모달창 외부 클릭 시 닫기
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
 
   const handleColorSelect = (color) => {
     setSelectedColor(color);
-    onColorChange(color); // ✅ 색상 변경 핸들러 호출 (즉시 반영)
+    onColorChange(color);
   };
 
   const handleSave = () => {
@@ -16,7 +31,7 @@ function Modal({ clickData, onClose, onSave, onColorChange }) {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content" style={{ borderColor: selectedColor }}>
+      <div className="modal-content" ref={modalRef} style={{ borderColor: selectedColor }}>
         <h2>위치 정보</h2>
         <p><strong>좌표:</strong> {clickData.lat}, {clickData.lng}</p>
         <p><strong>주소:</strong> {clickData.address || '주소 정보를 불러올 수 없습니다.'}</p>
