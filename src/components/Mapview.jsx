@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import ValidationHandler from './ValidationHandler';
-import { getMarkerColor } from './MarkerColor'; // ✅ 마커 색상 적용 함수 추가
+import { getCustomMarker } from './MarkerColor';
 
 function MapView() {
   const mapRef = useRef(null);
-  const [markers, setMarkers] = useState([]); // 저장된 마커 리스트
+  const [markers, setMarkers] = useState([]); // ✅ 저장된 마커 리스트
 
   useEffect(() => {
     if (window.kakao && window.kakao.maps) {
@@ -22,20 +22,21 @@ function MapView() {
     }
   }, []);
 
-  // ✅ 저장된 마커 불러와 지도에 표시
   const updateMarkers = () => {
+    if (!mapRef.current) return;
+
     const storedKeys = Object.keys(localStorage).filter(key => key.startsWith('marker'));
     const storedMarkers = storedKeys.map(key => JSON.parse(localStorage.getItem(key)));
 
-    // 기존 마커 삭제
+    // ✅ 기존 마커 삭제
     markers.forEach(marker => marker.setMap(null));
 
-    // 새로운 마커 표시
+    // ✅ 저장된 마커 표시
     const newMarkers = storedMarkers.map(({ lat, lng, color }) => {
       return new kakao.maps.Marker({
         position: new kakao.maps.LatLng(lat, lng),
         map: mapRef.current,
-        image: getMarkerColor(color), // ✅ SVG 기반 색상 적용
+        image: getCustomMarker(color),
       });
     });
 
