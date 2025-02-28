@@ -55,29 +55,29 @@
   margin-top: 20px;
 }
 
-/* ✅ 아이콘 버튼에도 애니메이션 추가 */
+/* ✅ 아이콘 버튼 (정중앙 정렬 + 원형으로 고정) */
 .icon-button {
   width: 50px;
   height: 50px;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1 / 1; /* ? 원형 유지 */
   border-radius: 50%;
   border: 2px solid white;
   cursor: pointer;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  font-size: 24px;
+  font-size: 22px;  /* ? 크기 유지 */
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center;  /* ? 세로 중앙 정렬 */
+  justify-content: center; /* ? 가로 중앙 정렬 */
   text-align: center;
-  line-height: 50px;
+  font-family: 'Arial', sans-serif; /* ? 특수 문자 간격 균일화 */
+  font-weight: bold; /* ? 가독성 유지 */
+  line-height: 1; /* ? 글자의 높이 균형 맞추기 */
+  padding: 0; /* ? 패딩 초기화 */
   overflow: hidden;
-  white-space: nowrap;
-  padding: 0;
   flex-shrink: 0;
-  animation: border-pulse 3s infinite; /* ✅ 아이콘에도 추가 */
+  animation: border-pulse 3s infinite;
   transition: border-color 0.3s ease;
 }
-
 
 .icon-button:hover {
   transform: scale(1.2);
