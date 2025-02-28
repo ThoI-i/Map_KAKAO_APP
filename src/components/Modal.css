@@ -13,20 +13,17 @@
 
 .modal-content {
   background-color: rgba(0, 0, 0, 0.5);
-  padding: 20px;
-  border-radius: 12px;
-  width: 450px;
+  padding: 30px;
+  border-radius: 16px;
+  width: 500px;
   border: 6px solid transparent;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  animation: border-pulse 3s infinite;
-  transition: border-color 0.3s ease;
   position: relative;
+  animation: border-pulse 3s infinite; /* ✅ 모달에도 다시 적용 */
+  transition: border-color 0.3s ease;
 }
 
-.border-active {
-  border-color: var(--active-border-color);
-}
-
+/* ✅ 색상 버튼 스타일 */
 .color-selection {
   display: flex;
   justify-content: space-around;
@@ -34,8 +31,8 @@
 }
 
 .color-button {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   border: 2px solid white;
   cursor: pointer;
@@ -51,16 +48,60 @@
   box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.6);
 }
 
-.location-info {
-  color: white;
-  font-size: 16px;
-  margin-bottom: 10px;
+/* ✅ 아이콘 버튼을 완전히 원형으로 유지 */
+.icon-selection {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
 }
 
+/* ✅ 아이콘 버튼에도 애니메이션 추가 */
+.icon-button {
+  width: 50px;
+  height: 50px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  border: 2px solid white;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 50px;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0;
+  flex-shrink: 0;
+  animation: border-pulse 3s infinite; /* ✅ 아이콘에도 추가 */
+  transition: border-color 0.3s ease;
+}
+
+
+.icon-button:hover {
+  transform: scale(1.2);
+}
+
+.icon-button.active {
+  box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.6);
+}
+
+/* ✅ border-pulse 애니메이션 정의 */
+@keyframes border-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* ✅ 기존 저장/취소 버튼 스타일 유지 */
 .button-group {
   margin-top: 20px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* ✅ 저장은 왼쪽, 취소는 오른쪽 */
 }
 
 .save-button {
@@ -83,34 +124,4 @@
   font-size: 16px;
   cursor: pointer;
   font-weight: bold;
-}
-
-.popup {
-  position: fixed;
-  bottom: 20px;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-size: 14px;
-  z-index: 1100;
-  animation: fade-in 0.3s ease;
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes border-pulse {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
-  }
 }
