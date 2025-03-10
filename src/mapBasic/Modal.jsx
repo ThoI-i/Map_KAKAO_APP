@@ -1,28 +1,14 @@
-import React, { useEffect, useRef } from "react";
-import "./Modal.css";
+import React from "react";
+import "./Modal.css"; // ✅ 스타일 추가
 
 function Modal({ place, onClose }) {
-  const modalRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [onClose]);
-
   return (
     <div className="modal-overlay">
-      <div className="modal-content" ref={modalRef}>
-        <h2>{place.name}</h2>
-        <p><strong>주소:</strong> {place.address}</p>
-        <button onClick={onClose} className="close-button">닫기</button>
+      <div className="modal-content">
+        <h2>{place.place_name}</h2>
+        <p><strong>주소:</strong> {place.address_name}</p>
+        <p><strong>카테고리:</strong> {place.category_group_name}</p>
+        <button onClick={onClose}>닫기</button>
       </div>
     </div>
   );

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 
 function ZoomLevel({ mapRef }) {
-  const [zoomLevel, setZoomLevel] = useState(3); // ✅ 기본 줌 레벨 설정
+  const [zoomLevel, setZoomLevel] = useState(3);
 
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // ✅ 지도 줌 변경 시 이벤트 리스너 추가
     kakao.maps.event.addListener(mapRef.current, "zoom_changed", () => {
       setZoomLevel(mapRef.current.getLevel()); // ✅ 현재 줌 레벨 업데이트
     });

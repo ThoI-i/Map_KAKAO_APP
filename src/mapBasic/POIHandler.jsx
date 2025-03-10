@@ -11,7 +11,7 @@ function POIHandler({ mapRef, pois }) {
       const lat = mouseEvent.latLng.getLat();
       const lng = mouseEvent.latLng.getLng();
 
-      // ✅ 클릭한 위치에서 가장 가까운 POI 찾기
+      // ✅ 현재 보이는 POI 목록에서 클릭한 좌표와 가장 가까운 POI 찾기
       const closestPOI = pois.reduce((closest, poi) => {
         const poiLat = parseFloat(poi.y);
         const poiLng = parseFloat(poi.x);
@@ -22,7 +22,7 @@ function POIHandler({ mapRef, pois }) {
           : closest;
       }, null);
 
-      if (closestPOI && closestPOI.distance < 0.002) { // ✅ 클릭 범위 내 POI만 선택
+      if (closestPOI && closestPOI.distance < 0.002) { // ✅ 클릭한 위치 근처에 POI가 있는 경우만 표시
         setSelectedPOI({
           name: closestPOI.place_name,
           address: closestPOI.address_name,
