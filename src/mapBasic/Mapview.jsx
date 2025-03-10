@@ -5,7 +5,7 @@ import ZoomLevel from "./ZoomLevel";
 
 function MapView() {
   const mapRef = useRef(null);
-  const [pois, setPois] = useState([]); // ✅ 현재 지도에서 불러온 POI 데이터
+  const [pois, setPois] = useState([]); // ✅ 현재 보이는 POI 데이터
 
   useEffect(() => {
     if (window.kakao && window.kakao.maps) {
