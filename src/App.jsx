@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import Sidebar from './components/Sidebar';
-import LoginButton from './components/LoginButton';
-import SearchPlaces from './components/SearchPlaces';
-import Favorites from './components/Favorites';
-import MapView from './components/Mapview';
+import MapView from "./mapBasic/Mapview"; // ✅ mapBasic 폴더에 있는 MapView 불러오기
+// import Sidebar from './components/Sidebar';
+// import LoginButton from './components/LoginButton';
+// import SearchPlaces from './components/SearchPlaces';
+// import Favorites from './components/Favorites';
+// import MapView from './components/Mapview';
 
 
 function App() {
@@ -33,7 +34,7 @@ function App() {
 
   return (
     <div style={{ display: 'flex' }}>
-      <Sidebar onTabChange={setActiveTab} />
+      {/* <Sidebar onTabChange={setActiveTab} /> */}
       <div style={{ marginLeft: '200px', padding: '20px', width: '100%' }}>
         {renderContent()}  {/* 탭에 따라 컴포넌트 변경 */}
       </div>
