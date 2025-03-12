@@ -7,11 +7,11 @@ function POIHandler({ mapRef, pois }) {
   useEffect(() => {
     if (!mapRef?.current) return; // ?.(optional chaining) 연산자
                                   // mapRef 자체가 undefined / null 경우 방지
-                                  
-    const map = mapRef.current; // 코드 가독성, 유지보수↑
 
-    kakao.maps.event.removeListener(map, "click"); // 기존 클릭 이벤트 리스너 제거 (중복 생성 방지)
-
+    const map = mapRef.current; // POILoader.jsx에서 받아온 mapRef 사용
+    
+    kakao.maps.event.removeListener(map, "click"); // 기존 이벤트 리스너 제거 (중복 생성 방지)
+   
     // ? 클릭 이벤트 리스너 추가
     const handleClick = (mouseEvent) => {
       const lat = mouseEvent.latLng.getLat();
@@ -45,7 +45,7 @@ function POIHandler({ mapRef, pois }) {
     return () => {
       kakao.maps.event.removeListener(map, "click", handleClick);
     };
-  }, [mapRef, pois]);
+  }, [mapRef, pois]); // ? mapRef를 의존성으로 포함 → POILoader.jsx에서 변경된 map을 반영 가능
 
   return (
     <>
