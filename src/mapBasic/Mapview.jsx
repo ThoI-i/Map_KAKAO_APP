@@ -5,24 +5,13 @@ import POIHandler from "./POIHandler";
 
 function MapView() {
   const mapRef = useRef(null);
-  const [selectedPOI, setSelectedPOI] = useState(null); // ✅ 선택된 POI 정보 저장
-
-  useEffect(() => {
-    if (!mapRef.current) {
-      const container = document.getElementById("map");
-      const options = {
-        center: new window.kakao.maps.LatLng(37.5665, 126.9780),
-        level: 3,
-      };
-      mapRef.current = new window.kakao.maps.Map(container, options);
-    }
-  }, []);
+  const [selectedPOI, setSelectedPOI] = useState(null); // 선택된 POI 정보 저장
 
   return (
     <div id="map" style={styles.map}>
-      <POILoader mapRef={mapRef} setSelectedPOI={setSelectedPOI} /> {/* ✅ 클릭한 위치에서 POI 검색 */}
-      <POIHandler selectedPOI={selectedPOI} /> {/* ✅ 선택된 POI 처리 */}
-      {selectedPOI && <Modal place={selectedPOI} onClose={() => setSelectedPOI(null)} />} {/* ✅ POI 정보 표시 */}
+      <POILoader mapRef={mapRef} setSelectedPOI={setSelectedPOI} /> {/* ? POILoader가 모든 지도 로직을 담당 */}
+      <POIHandler selectedPOI={selectedPOI} /> {/* ? 선택된 POI를 POIHandler에 전달하여 처리 */}
+      {selectedPOI && <Modal place={selectedPOI} onClose={() => setSelectedPOI(null)} />}
     </div>
   );
 }

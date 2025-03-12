@@ -1,14 +1,27 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function POILoader({ mapRef, setSelectedPOI }) {
+  const [mapLevel, setMapLevel] = useState(3); // ? 현재 지도 배율(`level`) 상태 저장
+
   useEffect(() => {
-    if (!mapRef?.current) return;
+    if (!mapRef?.current) {
+      const container = document.getElementById("map");
+      const options = {
+        center: new window.kakao.maps.LatLng(37.5665, 126.9780), // ? 기본 지도 위치 설정
+        level: 3, // ? 기본 지도 배율 설정
+      };
+      mapRef.current = new window.kakao.maps.Map(container, options);
+    }
 
     const map = mapRef.current;
     const places = new kakao.maps.services.Places();
 
-    // ? 검색할 카테고리 리스트 (카카오 API 제공 카테고리)
-    const categoryCodes = ["FD6", "CE7", "MT1", "CS2", "SW8", "BK9", "OL7", "PO3", "AT4", "AD5", "SC4"];
+    // Map Level 변경 시 Console 로그 확인
+    kakao.maps.event.addListener(map, "zoom_changed", () => {
+      const newLevel = map.getLevel();
+      setMapLevel(newLevel); // ? 현재 지도 배율 업데이트
+      console.log("Current Map Level:", map.getLevel()); // ? 현재 Map Level 확인
+    });
 
     // Map Level에 따라 radius 변경 함수
     const getRadiusByLevel = (level) => { 
@@ -17,22 +30,20 @@ function POILoader({ mapRef, setSelectedPOI }) {
       return radiusMapping[level] || 500; // 기본값 500m
     };
 
-    // Map Level 변경 시 Console 로그 확인
-    kakao.maps.event.addListener(map, "zoom_changed", () => { 
-      console.log("Current Map Level:", map.getLevel()); // ? 현재 Map Level 확인
-    });
-
     // 기존 이벤트 리스너 제거 (중복 생성 방지)
     kakao.maps.event.removeListener(map, "click");
 
     // ? 클릭한 좌표에서 여러 카테고리의 POI 검색
-    const handleMapClick = (mouseEvent) => {
+    const handleClick = (mouseEvent) => {
       const lat = mouseEvent.latLng.getLat();
       const lng = mouseEvent.latLng.getLng();
       const currentLevel = map.getLevel(); // ? 현재 Map Level 가져오기 KAKAO API
       const radius = getRadiusByLevel(currentLevel); // ? 현재 레벨에 맞는 Radius 설정
 
       console.log("Current Map Level:", currentLevel, "Radius Setting:", radius); // ? 디버깅용 로그
+
+    // ? 검색할 카테고리 리스트 (카카오 API 제공 카테고리)
+    const categoryCodes = ["FD6", "CE7", "MT1", "CS2", "SW8", "BK9", "OL7", "PO3", "AT4", "AD5", "SC4"];
 
       // ? 여러 카테고리에 대한 검색을 동시에 실행하기 위해 `Promise.all()` 사용
       const searchPromises = categoryCodes.map(category =>
@@ -71,18 +82,17 @@ function POILoader({ mapRef, setSelectedPOI }) {
     };
 
     // 클릭 이벤트 리스너 추가
-    kakao.maps.event.addListener(map, "click", handleMapClick);
+    kakao.maps.event.addListener(map, "click", handleClick);
 
 // 컴포넌트 언마운트 시 리스너 제거 Cleanup(정리) 함수
     // ㄴPOIHandler 컴포넌트 종료 시 → 자동 실행(Unmount)
     return () => {
       kakao.maps.event.removeListener(map, "click", handleClick);
+      kakao.maps.event.removeListener(map, "zoom_changed");
     };
-
-
-  }, [mapRef, setSelectedPOI]);
-
-  return null;
+  }, [mapRef, setSelectedPOI]); // 의존성 배열: 값 변경 시 useEffect 재실행
+  return null; // function POILoader의 return
+               // return null은 렌더링할 내용X 경우 
 }
 
 export default POILoader;
