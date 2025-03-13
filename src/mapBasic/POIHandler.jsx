@@ -1,57 +1,65 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
+import { fetchPOIData } from "./poiService"; // ✅ POI 검색 함수 가져오기
 
-function POIHandler({ mapRef, pois }) {
+const POIHandler = ({ mapRef, pois, setPois }) => {
   const [selectedPOI, setSelectedPOI] = useState(null);
+  const [clickedLocation, setClickedLocation] = useState(null); // ✅ 클릭한 좌표 저장
 
   useEffect(() => {
-    if (!mapRef?.current) return; // ?.(optional chaining) 연산자
-                                  // mapRef 자체가 undefined / null 경우 방지
+    if (!mapRef.current) {
+      console.warn("⚠️ POIHandler에서 mapRef.current가 초기화되지 않았습니다.");
+      return;
+    }
 
-    const map = mapRef.current; // POILoader.jsx에서 받아온 mapRef 사용
-    
-    kakao.maps.event.removeListener(map, "click"); // 기존 이벤트 리스너 제거 (중복 생성 방지)
-   
-    // ? 클릭 이벤트 리스너 추가
-    const handleClick = (mouseEvent) => {
+    console.log("✅ POIHandler에서 mapRef.current:", mapRef.current);
+
+    const map = mapRef.current;
+
+    // ✅ 클릭할 때마다 최신 POI 검색
+    const handleClick = async (mouseEvent) => {
       const lat = mouseEvent.latLng.getLat();
       const lng = mouseEvent.latLng.getLng();
+      setClickedLocation({ lat, lng }); // ✅ 클릭한 위치 저장
 
-      // ? 현재 보이는 POI 목록에서 클릭한 좌표와 가장 가까운 POI 찾기
-      const closestPOI = pois.reduce((closest, poi) => {
-        const poiLat = parseFloat(poi.y);
-        const poiLng = parseFloat(poi.x);
-        const distance = Math.sqrt((lat - poiLat) ** 2 + (lng - poiLng) ** 2);
-
-        return !closest || distance < closest.distance
-          ? { ...poi, distance }
-          : closest;
-      }, null);
-
-      if (closestPOI && closestPOI.distance < 0.002) { // ? 클릭한 위치 근처에 POI가 있는 경우만 표시
-        setSelectedPOI({
-          name: closestPOI.place_name,
-          address: closestPOI.address_name,
-        });
-      } else {
-        setSelectedPOI(null);
-      }
+      const newPOIs = await fetchPOIData(lat, lng, map.getLevel()); // ✅ POI 검색
+      setPois(newPOIs); // ✅ 최신 POI 데이터 갱신
     };
 
-    kakao.maps.event.addListener(map, "click", handleClick); // 클릭 이벤트 발생마다 handleClick()함수 실행
+    kakao.maps.event.addListener(map, "click", handleClick);
 
-    // 컴포넌트 언마운트 시 리스너 제거 Cleanup(정리) 함수
-    // ㄴPOIHandler 컴포넌트 종료 시 → 자동 실행(Unmount)
     return () => {
       kakao.maps.event.removeListener(map, "click", handleClick);
     };
-  }, [mapRef, pois]); // ? mapRef를 의존성으로 포함 → POILoader.jsx에서 변경된 map을 반영 가능
+  }, [mapRef, setPois]);
+
+  // ✅ pois가 업데이트될 때마다 가장 가까운 POI 자동 선택
+  useEffect(() => {
+    if (!clickedLocation || pois.length === 0) return;
+
+    const { lat, lng } = clickedLocation;
+    const closestPOI = pois.reduce((prev, curr) => {
+      const prevDist = Math.sqrt((lat - parseFloat(prev.y)) ** 2 + (lng - parseFloat(prev.x)) ** 2);
+      const currDist = Math.sqrt((lat - parseFloat(curr.y)) ** 2 + (lng - parseFloat(curr.x)) ** 2);
+      return currDist < prevDist ? curr : prev;
+    });
+
+    if (closestPOI) {
+      setSelectedPOI({
+        name: closestPOI.place_name,
+        address: closestPOI.address_name,
+        category: closestPOI.category_group_name,
+      });
+    } else {
+      setSelectedPOI(null);
+    }
+  }, [pois]);
 
   return (
     <>
       {selectedPOI && <Modal place={selectedPOI} onClose={() => setSelectedPOI(null)} />}
     </>
   );
-}
+};
 
 export default POIHandler;
