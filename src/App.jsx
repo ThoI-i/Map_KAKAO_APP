@@ -35,7 +35,7 @@ function App() {
   return (
     <div style={{ display: 'flex' }}>
       {/* <Sidebar onTabChange={setActiveTab} /> */}
-      <div style={{ marginLeft: '200px', padding: '20px', width: '100%' }}>
+      <div style={{ width: '100%' }}>
         {renderContent()}  {/* 탭에 따라 컴포넌트 변경 */}
       </div>
     </div>
