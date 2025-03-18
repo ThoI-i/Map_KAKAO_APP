@@ -76,7 +76,7 @@ export const fetchPOIData = async (center, zoomLevel) => {
         }, { ...allPOIs[0], distance: getDistance(centerLatLng, new kakao.maps.LatLng(parseFloat(allPOIs[0].y), parseFloat(allPOIs[0].x))) });
       }
 
-      resolve({ centerLatLng, zoomLevel, nearestPOI }); // ✅ centerLatLng, zoomLevel, nearestPOI만 반환
+      resolve({nearestPOI }); // ✅ nearestPOI만 반환
     });
   });
 };

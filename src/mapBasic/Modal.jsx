@@ -37,6 +37,7 @@ function Modal({ place, onClose }) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [onClose]);
+
   return (
     <div className="modal-overlay">
       {/* 모달 바깥쪽 좌상단에 아이콘 + 색상 표시 */}
@@ -93,21 +94,28 @@ function Modal({ place, onClose }) {
             )}
           </div>
         </div>
-        <h2>{place.place_name}</h2>
-        <p><strong>주소:</strong> {place.address_name}</p>
-        <p><strong>연락처:</strong> {place.phone}</p>
-        <p><strong>카테고리:</strong> {place.category_group_name}</p>
-        <p><strong>클릭한 지점과 거리:</strong> {place.distance}m</p>
-        
+
+        {/* ✅ 로딩 중 메시지 추가 */}
+        {!place.place_name ? (
+          <p style={{ textAlign: 'center', fontSize: '18px', fontWeight: 'bold' }}>📡 데이터 불러오는 중...</p>
+        ) : (
+          <>
+            <h2>{place.place_name}</h2>
+            <p><strong>주소:</strong> {place.address_name}</p>
+            <p><strong>연락처:</strong> {place.phone || '-'}</p>
+            <p><strong>카테고리:</strong> {place.category_group_name || '-'}</p>
+            <p><strong>클릭한 지점과 거리:</strong> {place.distance ? `${place.distance}m` : '-'}</p>
+          </>
+        )}
+
         <div className="button-row">
           <button onClick={onClose}>저장</button>
           <button onClick={onClose}>닫기</button>
           <div className="modal-result-display" style={{ backgroundColor: selectedColor, position: 'absolute', bottom: '10px', right: '10px', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {selectedIcon}
-        </div>
+            {selectedIcon}
+          </div>
         </div>
       </div>
-        
     </div>
   );
 }
