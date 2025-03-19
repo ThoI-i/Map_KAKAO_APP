@@ -13,20 +13,20 @@ const mapSlice = createSlice({
   name: "map",
   initialState,
   reducers: {
-    setInitialState: (state, action) => {
-      const { lat, lng, zoom } = action.payload;
-      state.lat = lat;
-      state.lng = lng;
-      state.zoom = zoom;
-    },
     setClickedLocation: (state, action) => {
-      const { lat, lng, zoom } = action.payload;
-      state.clickedLat = lat;
-      state.clickedLng = lng;
-      state.clickedZoom = zoom;
+      if (action.payload.lat === null) {
+        // ? 클릭된 위치 초기화
+        state.clickedLat = null;
+        state.clickedLng = null;
+        state.clickedZoom = null;
+      } else {
+        state.clickedLat = action.payload.lat;
+        state.clickedLng = action.payload.lng;
+        state.clickedZoom = action.payload.zoom;
+      }
     },
   },
 });
 
-export const { setInitialState, setClickedLocation } = mapSlice.actions;
+export const { setClickedLocation } = mapSlice.actions;
 export default mapSlice.reducer;
