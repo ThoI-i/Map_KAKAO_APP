@@ -83,14 +83,18 @@
   text-align: center;
 }
 
-.modal-result-display {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px; /* ✅ 크기 통일 */
-  height: 40px;
-  font-size: 20px;
+.button-row .modal-result-display {
+  position: absolute;
+  display: flex;  /* ✅ flexbox로 내부 요소 정렬 */
+  align-items: center; /* ✅ 수직 정렬 */
+  justify-content: center; /* ✅ 수평 정렬 */
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   color: white;
-  transition: all 0.2s ease-in-out;
+  font-size: 13px;
+  line-height: 13px;
+  text-align: center;
 }
+
+

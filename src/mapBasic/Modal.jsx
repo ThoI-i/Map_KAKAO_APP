@@ -111,7 +111,7 @@ function Modal({ place, onClose }) {
         <div className="button-row">
           <button onClick={onClose}>저장</button>
           <button onClick={onClose}>닫기</button>
-          <div className="modal-result-display" style={{ backgroundColor: selectedColor, position: 'absolute', bottom: '10px', right: '10px', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="modal-result-display" style={{ backgroundColor: selectedColor, bottom: '10px', right: '10px'}}>
             {selectedIcon}
           </div>
         </div>
