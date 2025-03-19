@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';  // ? Redux 관련 추가
+import { setMarkerColor, setMarkerIcon } from '../store/markerSlice'; // ? Redux 액션 불러오기
 import './Modal.css';
 
 function Modal({ place, onClose }) {
   if (!place) return null;
 
-  const [selectedColor, setSelectedColor] = useState('#36c991');
-  const [selectedIcon, setSelectedIcon] = useState('★');
+  const dispatch = useDispatch(); // ? Redux Dispatch 추가
+  const selectedColor = useSelector((state) => state.marker.color); // ? Redux에서 색상 가져오기
+  const selectedIcon = useSelector((state) => state.marker.icon);   // ? Redux에서 아이콘 가져오기
+
   const [colorMenuOpen, setColorMenuOpen] = useState(false);
   const [iconMenuOpen, setIconMenuOpen] = useState(false);
   const colorMenuRef = useRef(null);
@@ -40,7 +44,6 @@ function Modal({ place, onClose }) {
 
   return (
     <div className="modal-overlay">
-      {/* 모달 바깥쪽 좌상단에 아이콘 + 색상 표시 */}
       <div className="modal-result-display" style={{ position: 'absolute', top: '10px', left: '-60px', backgroundColor: selectedColor }}>
         {selectedIcon}
       </div>
@@ -64,7 +67,7 @@ function Modal({ place, onClose }) {
                     key={color} 
                     className="color-option" 
                     style={{ backgroundColor: color }} 
-                    onClick={() => setSelectedColor(color)}
+                    onClick={() => dispatch(setMarkerColor(color))} // ? Redux 상태 업데이트
                   />
                 ))}
               </div>
@@ -85,7 +88,7 @@ function Modal({ place, onClose }) {
                   <div 
                     key={icon} 
                     className="icon-option" 
-                    onClick={() => setSelectedIcon(icon)}
+                    onClick={() => dispatch(setMarkerIcon(icon))} // ? Redux 상태 업데이트
                   >
                     {icon}
                   </div>
@@ -95,9 +98,9 @@ function Modal({ place, onClose }) {
           </div>
         </div>
 
-        {/* ✅ 로딩 중 메시지 추가 */}
+        {/* ? 로딩 중 메시지 추가 */}
         {!place.place_name ? (
-          <p style={{ textAlign: 'center', fontSize: '18px', fontWeight: 'bold' }}>📡 데이터 불러오는 중...</p>
+          <p style={{ textAlign: 'center', fontSize: '18px', fontWeight: 'bold' }}>?? 데이터 불러오는 중...</p>
         ) : (
           <>
             <h2>{place.place_name}</h2>
@@ -107,7 +110,7 @@ function Modal({ place, onClose }) {
             <p><strong>클릭한 지점과 거리:</strong> {place.distance ? `${place.distance}m` : '-'}</p>
           </>
         )}
-
+        
         <div className="button-row">
           <button onClick={onClose}>저장</button>
           <button onClick={onClose}>닫기</button>
