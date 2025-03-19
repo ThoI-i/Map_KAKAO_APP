@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';  // ? Redux 관련 추가
-import { setMarkerColor, setMarkerIcon } from '../store/markerSlice'; // ? Redux 액션 불러오기
-import './Modal.css';
+import { useDispatch, useSelector } from 'react-redux';  
+import { setMarkerColor, setMarkerIcon } from '../store/markerSlice'; 
+import styles from "./Modal.module.css";  
 
 function Modal({ place, onClose }) {
   if (!place) return null;
 
-  const dispatch = useDispatch(); // ? Redux Dispatch 추가
-  const selectedColor = useSelector((state) => state.marker.color); // ? Redux에서 색상 가져오기
-  const selectedIcon = useSelector((state) => state.marker.icon);   // ? Redux에서 아이콘 가져오기
+  const dispatch = useDispatch(); 
+  const selectedColor = useSelector((state) => state.marker.color);
+  const selectedIcon = useSelector((state) => state.marker.icon);
 
   const [colorMenuOpen, setColorMenuOpen] = useState(false);
   const [iconMenuOpen, setIconMenuOpen] = useState(false);
@@ -24,14 +24,14 @@ function Modal({ place, onClose }) {
       if (
         colorMenuRef.current &&
         !colorMenuRef.current.contains(event.target) &&
-        !event.target.classList.contains('color-menu-trigger')
+        !event.target.classList.contains(styles.colorMenuTrigger)
       ) {
         setColorMenuOpen(false);
       }
       if (
         iconMenuRef.current &&
         !iconMenuRef.current.contains(event.target) &&
-        !event.target.classList.contains('icon-menu-trigger')
+        !event.target.classList.contains(styles.iconMenuTrigger)
       ) {
         setIconMenuOpen(false);
       }
@@ -43,52 +43,52 @@ function Modal({ place, onClose }) {
   }, [onClose]);
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-result-display" style={{ position: 'absolute', top: '10px', left: '-60px', backgroundColor: selectedColor }}>
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalResultDisplay} style={{ position: 'absolute', top: '10px', left: '-60px', backgroundColor: selectedColor }}>
         {selectedIcon}
       </div>
   
-      <div className="modal-content" ref={modalRef} style={{ borderColor: selectedColor }}>
-        <div className="modal-header">
+      <div className={styles.modalContent} ref={modalRef} style={{ borderColor: selectedColor }}>
+        <div className={styles.modalHeader}>
           <div 
-            className="color-menu-container"
+            className={styles.colorMenuContainer}
             onMouseEnter={() => !iconMenuOpen && setColorMenuOpen(true)}
             onMouseLeave={() => setColorMenuOpen(false)}
             ref={colorMenuRef}
           >
             <div 
-              className={`color-menu-trigger ${iconMenuOpen ? 'disabled' : ''}`} 
+              className={`${styles.colorMenuTrigger} ${iconMenuOpen ? styles.disabled : ''}`} 
               style={{ backgroundColor: selectedColor }}
             ></div>
             {colorMenuOpen && (
-              <div className="color-menu">
+              <div className={styles.colorMenu}>
                 {['#ff7fbf', '#c9366e', '#007bff', '#36c991', '#a46ac8'].map((color) => (
                   <div 
                     key={color} 
-                    className="color-option" 
+                    className={styles.colorOption} 
                     style={{ backgroundColor: color }} 
-                    onClick={() => dispatch(setMarkerColor(color))} // ? Redux 상태 업데이트
+                    onClick={() => dispatch(setMarkerColor(color))}
                   />
                 ))}
               </div>
             )}
           </div>
           <div 
-            className="icon-menu-container"
+            className={styles.iconMenuContainer}
             onMouseEnter={() => !colorMenuOpen && setIconMenuOpen(true)}
             onMouseLeave={() => setIconMenuOpen(false)}
             ref={iconMenuRef}
           >
-            <div className={`icon-menu-trigger ${colorMenuOpen ? 'disabled' : ''}`}>
+            <div className={`${styles.iconMenuTrigger} ${colorMenuOpen ? styles.disabled : ''}`}>
               {selectedIcon}
             </div>
             {iconMenuOpen && (
-              <div className="icon-menu">
+              <div className={styles.iconMenu}>
                 {['★', '●', '◆', '■', '▲', '▼', '♥', '♬'].map((icon) => (
                   <div 
                     key={icon} 
-                    className="icon-option" 
-                    onClick={() => dispatch(setMarkerIcon(icon))} // ? Redux 상태 업데이트
+                    className={styles.iconOption} 
+                    onClick={() => dispatch(setMarkerIcon(icon))}
                   >
                     {icon}
                   </div>
@@ -98,9 +98,8 @@ function Modal({ place, onClose }) {
           </div>
         </div>
 
-        {/* ? 로딩 중 메시지 추가 */}
         {!place.place_name ? (
-          <p style={{ textAlign: 'center', fontSize: '18px', fontWeight: 'bold' }}>?? 데이터 불러오는 중...</p>
+          <p style={{ textAlign: 'center', fontSize: '18px', fontWeight: 'bold' }}>📡 데이터 불러오는 중...</p>
         ) : (
           <>
             <h2>{place.place_name}</h2>
@@ -111,10 +110,10 @@ function Modal({ place, onClose }) {
           </>
         )}
         
-        <div className="button-row">
+        <div className={styles.buttonRow}>
           <button onClick={onClose}>저장</button>
           <button onClick={onClose}>닫기</button>
-          <div className="modal-result-display" style={{ backgroundColor: selectedColor, bottom: '10px', right: '10px'}}>
+          <div className={styles.modalResultDisplay} style={{ backgroundColor: selectedColor, bottom: '10px', right: '10px'}}>
             {selectedIcon}
           </div>
         </div>

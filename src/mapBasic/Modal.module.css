@@ -1,4 +1,4 @@
-.modal-overlay {
+.modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,29 +11,29 @@
   z-index: 1000;
 }
 
-.modal-content {
-  background-color: black;
+.modalContent {
+  background-color: rgba(0, 0, 0, 0.65);
   padding: 20px;
   border-radius: 10px;
   width: 400px;
   border: 4px solid transparent;
   position: relative;
-  animation: border-pulse 3s infinite;
+  animation: borderPulse 3s infinite;
   transition: border-color 0.3s ease;
 }
 
-.modal-header {
+.modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.color-menu-container, .icon-menu-container {
+.colorMenuContainer, .iconMenuContainer {
   position: relative;
 }
 
-.color-menu-trigger, .icon-menu-trigger {
+.colorMenuTrigger, .iconMenuTrigger {
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -44,7 +44,7 @@
   position: relative;
 }
 
-.color-menu {
+.colorMenu {
   display: flex;
   position: absolute;
   top: 50%;
@@ -57,7 +57,7 @@
   transition: left 0.3s ease;
 }
 
-.icon-menu {
+.iconMenu {
   display: flex;
   position: absolute;
   top: 50%;
@@ -70,7 +70,7 @@
   transition: right 0.3s ease;
 }
 
-.color-option, .icon-option {
+.colorOption, .iconOption {
   width: 25px;
   height: 25px;
   border-radius: 50%;
@@ -83,7 +83,7 @@
   text-align: center;
 }
 
-.button-row .modal-result-display {
+.buttonRow .modalResultDisplay {
   position: absolute;
   display: flex;  /* ✅ flexbox로 내부 요소 정렬 */
   align-items: center; /* ✅ 수직 정렬 */
@@ -96,5 +96,3 @@
   line-height: 13px;
   text-align: center;
 }
-
-
