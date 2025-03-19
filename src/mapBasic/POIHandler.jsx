@@ -52,6 +52,12 @@ const POIHandler = ({ mapRef }) => {
     });
   };
 
+  // ✅ 모달 닫힐 때 클릭된 위치 초기화
+  const handleModalClose = () => {
+    setSelectedPOI(null);
+    dispatch(setClickedLocation({ lat: null, lng: null, zoom: null })); // ✅ Redux에서 클릭된 위치 삭제
+  };
+
   // ✅ 지도 클릭 이벤트 등록
   useEffect(() => {
     if (!mapRef.current) return;
@@ -74,10 +80,7 @@ const POIHandler = ({ mapRef }) => {
       {selectedPOI && (
         <Modal
           place={selectedPOI}
-          onClose={() => {
-            setSelectedPOI(null);
-            dispatch(setClickedLocation({ lat: clickedLat, lng: clickedLng, zoom: clickedZoom })); // ✅ 모달 닫을 때 Redux에 최종 위치 저장
-          }}
+          onClose={handleModalClose} // ✅ 모달 닫힐 때 Redux 상태 초기화
         />
       )}
     </>
