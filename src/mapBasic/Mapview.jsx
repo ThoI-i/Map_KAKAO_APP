@@ -1,17 +1,35 @@
-import React, { useRef, useState } from "react";
-import usePOILoader from "./usePOILoader";
+import React, { useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setClickedLocation } from "../store/mapSlice";
 import POIHandler from "./POIHandler";
 
 const MapView = () => {
   const mapRef = useRef(null);
-  const [isMapLoaded, setIsMapLoaded] = useState(false);
-  const [pois, setPois] = useState([]); // ✅ 최신 POI 데이터를 저장할 상태 추가
+  const dispatch = useDispatch();
+  const { lat, lng, zoom } = useSelector((state) => state.map);
 
-  usePOILoader(mapRef, setIsMapLoaded); // ✅ 지도 로딩 처리
+  useEffect(() => {
+    if (!mapRef.current) {
+      console.log("🔥 지도 초기화!");
+
+      const container = document.getElementById("map");
+      if (!container) {
+        console.error("❌ #map 컨테이너를 찾을 수 없습니다!");
+        return;
+      }
+
+      const options = {
+        center: new window.kakao.maps.LatLng(lat, lng),
+        level: zoom,
+      };
+
+      mapRef.current = new window.kakao.maps.Map(container, options);
+    }
+  }, [lat, lng, zoom]);
 
   return (
     <div id="map" style={{ width: "100vw", height: "100vh" }}>
-      {isMapLoaded && <POIHandler mapRef={mapRef} pois={pois} setPois={setPois} />} 
+      <POIHandler mapRef={mapRef} dispatch={dispatch} />
     </div>
   );
 };

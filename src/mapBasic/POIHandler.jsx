@@ -1,26 +1,32 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setClickedLocation } from "../store/mapSlice"; // ✅ Redux 액션 불러오기
 import Modal from "./Modal";
 import { fetchPOIData } from "./poiService"; // ✅ POI 데이터 가져오는 함수
 import CustomMarker from "./CustomMarker"; // ✅ 커스텀 마커 컴포넌트 추가
 
 const POIHandler = ({ mapRef }) => {
+  const dispatch = useDispatch();
+
+  // ✅ Redux에서 클릭한 위치 가져오기
+  const { clickedLat, clickedLng, clickedZoom } = useSelector((state) => state.map);
+  
   const [selectedPOI, setSelectedPOI] = useState(null);
-  const [center, setCenter] = useState(null); // ✅ 클릭한 위치 저장
   const geocoder = new kakao.maps.services.Geocoder(); // ✅ 주소 변환을 위한 Geocoder 객체
 
-  // ✅ 클릭 시 POI 데이터 가져오기 & center 저장
+  // ✅ 클릭 시 Redux에 위치 저장 & POI 데이터 가져오기
   const handlePOIClick = async (mouseEvent) => {
     if (!mapRef.current) return;
 
     const map = mapRef.current;
     const lat = mouseEvent.latLng.getLat();
     const lng = mouseEvent.latLng.getLng();
-    const newCenter = { Lat: lat, Lng: lng, zoom: map.getLevel() };
+    const zoom = map.getLevel();
 
-    console.log(`📍 클릭 위치: (${newCenter.Lat}, ${newCenter.Lng}), 줌 레벨: ${newCenter.zoom}`);
+    console.log(`📍 클릭 위치: (${lat}, ${lng}), 줌 레벨: ${zoom}`);
 
-    // ✅ 클릭한 위치 저장 (커스텀 마커를 위해)
-    setCenter(newCenter);
+    // ✅ Redux에 클릭한 위치 저장
+    dispatch(setClickedLocation({ lat, lng, zoom }));
 
     // ✅ 도로명 주소 변환 요청
     geocoder.coord2Address(lng, lat, async (result, status) => {
@@ -28,7 +34,7 @@ const POIHandler = ({ mapRef }) => {
         let address = result[0]?.road_address?.address_name || "주소 정보 없음";
 
         // ✅ POI 데이터 가져오기
-        const { nearestPOI } = await fetchPOIData(newCenter, newCenter.zoom);
+        const { nearestPOI } = await fetchPOIData({ Lat: lat, Lng: lng }, zoom);
 
         if (nearestPOI) {
           console.log("✅ 선택된 POI:", nearestPOI);
@@ -59,8 +65,10 @@ const POIHandler = ({ mapRef }) => {
 
   return (
     <>
-      {/* ✅ 클릭한 위치(center)를 CustomMarker로 전달 */}
-      {center && <CustomMarker mapRef={mapRef} center={center} />}
+      {/* ✅ Redux에서 가져온 클릭 위치를 CustomMarker로 전달 */}
+      {clickedLat && clickedLng && (
+        <CustomMarker mapRef={mapRef} center={{ Lat: clickedLat, Lng: clickedLng }} />
+      )}
       
       {/* ✅ POI 정보가 있을 때 모달 표시 */}
       {selectedPOI && (
@@ -68,7 +76,7 @@ const POIHandler = ({ mapRef }) => {
           place={selectedPOI}
           onClose={() => {
             setSelectedPOI(null);
-            setCenter(null); // ✅ 모달 닫힐 때 마커 삭제
+            dispatch(setClickedLocation({ lat: clickedLat, lng: clickedLng, zoom: clickedZoom })); // ✅ 모달 닫을 때 Redux에 최종 위치 저장
           }}
         />
       )}
