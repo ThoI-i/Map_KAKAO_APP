@@ -16,8 +16,18 @@ const CustomMarker = ({ mapRef, center }) => {
     }
 
     const markerDiv = document.createElement("div");
-    markerDiv.className = "modal-result-display";
     markerDiv.style.backgroundColor = selectedColor;
+    markerDiv.style.position = "absolute";
+    markerDiv.style.display = "flex";
+    markerDiv.style.alignItems = "center";
+    markerDiv.style.justifyContent = "center";
+    markerDiv.style.width = "20px";
+    markerDiv.style.height = "20px";
+    markerDiv.style.borderRadius = "50%";
+    markerDiv.style.color = "white";
+    markerDiv.style.fontSize = "13px";
+    markerDiv.style.lineHeight = "13px";
+    markerDiv.style.textAlign = "center";
     markerDiv.innerText = selectedIcon;
 
     const newOverlay = new kakao.maps.CustomOverlay({
