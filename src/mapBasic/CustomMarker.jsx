@@ -28,12 +28,15 @@ const CustomMarker = ({ mapRef, center }) => {
     markerDiv.style.fontSize = "13px";
     markerDiv.style.lineHeight = "13px";
     markerDiv.style.textAlign = "center";
+    markerDiv.style.transform = "translate(-50%, -50%)"; // 🎯 클릭한 위치가 정확히 중앙!
     markerDiv.innerText = selectedIcon;
+    
 
     const newOverlay = new kakao.maps.CustomOverlay({
       position: new kakao.maps.LatLng(center.Lat, center.Lng),
       content: markerDiv,
-      yAnchor: 1.0,
+      yAnchor: 0.5,
+      xAnchor: 0.5,
     });
 
     newOverlay.setMap(map);
