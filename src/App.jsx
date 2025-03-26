@@ -1,12 +1,5 @@
 import { useEffect, useState } from 'react';
-import MapView from "./mapBasic/Mapview"; // ✅ mapBasic 폴더에 있는 MapView 불러오기
-// import Sidebar from './components/Sidebar';
-// import LoginButton from './components/LoginButton';
-// import SearchPlaces from './components/SearchPlaces';
-// import Favorites from './components/Favorites';
-// import MapView from './components/Mapview';
-
-
+import MapView from "./map/Mapview";
 function App() {
   const [activeTab, setActiveTab] = useState('map');  // 기본 페이지를 'map'으로 설정
 
