@@ -13,8 +13,10 @@ const LoginForm = ({ onSuccess }) => {
     setError('');
 
     try {
-      const response = await api.post('/api/login', { email, password });
-
+      const response = await api.post('/api/login', {
+        emailOrNickname: email,  // ✅ 백엔드 DTO에 맞춰 key 수정!
+        password: password
+      });
       // ✅ accessToken 저장
       sessionStorage.setItem('accessToken', response.data.accessToken);
 
@@ -47,7 +49,7 @@ const LoginForm = ({ onSuccess }) => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <input
         type="email"
-        placeholder="이메일"
+        placeholder="이메일/닉네임"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
