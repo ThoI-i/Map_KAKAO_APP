@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setClickedLocation } from "../store/mapSlice";
-import POIHandler from "./POIHandler";
+import POIHandler from "../poi/POIHandler";
 import { checkLoginStatus } from "../services/authService"; // ✅ 로그인 체크
 
 const MapView = () => {
