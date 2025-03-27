@@ -21,7 +21,7 @@ const MapView = () => {
 
   return (
     <>
-      <div id="map" style={{ width: "100vw", height: "100vh" }} />
+      <div id="map" style={{ width: "100vw", height: "100vh", zIndex:0, positio:"relative" }} />
       <POIClickController mapRef={mapRef} /> {/* ✅ 클릭 분기 전용 컴포넌트 */}
     </>
   );

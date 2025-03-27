@@ -3,7 +3,9 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  server: { 
+  server: {
+    host: "127.0.0.1", // 또는 host: true
+    port: 5173,
     proxy: {
       "/auth": {
         target: "http://localhost:9000",
@@ -18,4 +20,4 @@ export default defineConfig({
     },
   },
   plugins: [react()],
-})
+});
