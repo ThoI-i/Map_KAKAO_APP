@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './LoginForm.module.css';
-
 
 const LoginForm = ({ onSuccess, visible }) => {
   const [email, setEmail] = useState('');
@@ -40,13 +40,14 @@ const LoginForm = ({ onSuccess, visible }) => {
 
       const data = await response.json();
       sessionStorage.setItem('accessToken', data.accessToken);
-      onSuccess();
+      onSuccess?.();
     } catch (err) {
       setError(`로그인 중 오류가 발생했어요 😢: ${err.message}`);
     }
   };
 
-  return (
+  // ✨ Portal로 렌더링할 JSX
+  const formUI = (
     <div className={styles.loginOverlay}>
       <div className={styles.loginContent}>
         <h2>로그인</h2>
@@ -69,7 +70,8 @@ const LoginForm = ({ onSuccess, visible }) => {
       </div>
     </div>
   );
-};
 
+  return createPortal(formUI, document.body); // ✨ 핵심: Portal 렌더링
+};
 
 export default LoginForm;
