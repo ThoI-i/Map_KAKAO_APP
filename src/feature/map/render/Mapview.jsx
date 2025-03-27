@@ -5,7 +5,7 @@ import POIClickController from '../../poi/containers/POIClickController';
 const MapView = () => {
   const mapRef = useRef(null);
   const { lat, lng, zoom } = useSelector((state) => state.map);
-  const [clickKey, setClickKey] = useState(0); // ✅ 상태 추가
+  const [clickKey, setClickKey] = useState(null); // 🔥 초기값 null
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -18,9 +18,9 @@ const MapView = () => {
       };
       mapRef.current = new window.kakao.maps.Map(container, options);
 
-      // ✅ 지도 클릭 이벤트 등록
+      // ✅ 클릭 시에만 clickKey 변경
       window.kakao.maps.event.addListener(mapRef.current, 'click', () => {
-        setClickKey((prev) => prev + 1); // ← key 변경으로 리렌더링 유도
+        setClickKey(prev => (prev === null ? 0 : prev + 1));
       });
     }
   }, [lat, lng, zoom]);
@@ -28,7 +28,10 @@ const MapView = () => {
   return (
     <>
       <div id="map" style={{ width: '100vw', height: '100vh', position: 'relative' }} />
-      <POIClickController key={clickKey} mapRef={mapRef} /> {/* ✅ key로 마운트 트리거 */}
+      {/* 👇 클릭 전에는 렌더링하지 않음 */}
+      {clickKey !== null && (
+        <POIClickController key={clickKey} mapRef={mapRef} />
+      )}
     </>
   );
 };
