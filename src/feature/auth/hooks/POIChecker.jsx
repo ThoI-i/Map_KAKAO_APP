@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { checkLoginStatus } from '../services/authService';
+import { checkLoginStatus } from '../api/authService';
 
 // 로그인(Access Token 존재 유/무 판단)
 const POIChecker = ({ onResult }) => {

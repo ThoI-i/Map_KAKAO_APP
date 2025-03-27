@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import POIChecker from '../auth/POIChecker';
+import POIChecker from '../../auth/hooks/POIChecker';
 import POIHandler from './POIHandler';
-import LoginForm from '../auth/LoginForm';
+import LoginForm from '../../auth/components/LoginForm';
 
 
 // 로그인 판단(POICheck)에 따른 후속 진행

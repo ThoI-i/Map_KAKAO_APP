@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
-import POIClickController from "../poi/POIClickController";
+import POIClickController from "../../poi/containers/POIClickController";
 
 const MapView = () => {
   const mapRef = useRef(null);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import MapView from "./map/Mapview";
+import MapView from "../feature/map/render/Mapview";
 function App() {
   const [activeTab, setActiveTab] = useState('map');  // 기본 페이지를 'map'으로 설정
 

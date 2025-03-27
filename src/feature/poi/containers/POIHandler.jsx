@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setClickedLocation } from "../store/mapSlice"; // ✅ Redux 액션 불러오기
-import Modal from "../modal/Modal";
-import { fetchPOIData } from "./poiService"; // ✅ POI 데이터 가져오는 함수
-import CustomMarker from "../map/CustomMarker"; // ✅ 커스텀 마커 컴포넌트 추가
+import { setClickedLocation } from "../../../store/mapSlice"; // ✅ Redux 액션 불러오기
+import Modal from "../../../components/modal/Modal";
+import { fetchPOIData } from "../api/poiService"; // ✅ POI 데이터 가져오는 함수
+import CustomMarker from "../../map/marker/CustomMarker"; // ✅ 커스텀 마커 컴포넌트 추가
 
 const POIHandler = ({ mapRef }) => {
   const dispatch = useDispatch();

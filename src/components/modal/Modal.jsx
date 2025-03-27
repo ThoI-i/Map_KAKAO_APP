@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';  
-import { setMarkerColor, setMarkerIcon } from '../store/markerSlice'; 
+import { setMarkerColor, setMarkerIcon } from '../../store/markerSlice'; 
 import styles from "./Modal.module.css";  
 
 function Modal({ place, onClose }) {
