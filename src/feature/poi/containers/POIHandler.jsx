@@ -50,9 +50,17 @@ const POIHandler = ({ mapRef }) => {
   useEffect(() => {
     if (!mapRef.current) return;
     const map = mapRef.current;
+
+    // ✅ 더블 클릭 확대 방지
+    const blockDoubleClick = () => false;
+
+    kakao.maps.event.addListener(map, 'dblclick', blockDoubleClick);
+
+    // ✅ 클릭 이벤트(POI 처리)
     kakao.maps.event.addListener(map, "click", handlePOIClick);
 
     return () => {
+      kakao.maps.event.removeListener(map, 'dblclick', blockDoubleClick);
       kakao.maps.event.removeListener(map, "click", handlePOIClick);
     };
   }, [mapRef]);
