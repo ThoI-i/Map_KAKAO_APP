@@ -36,7 +36,7 @@ export const login = async (emailOrNickname, password) => {
  * Refresh Token이 있다면 조용히 Access Token을 재발급
  */
 export const initializeAuth = async () => {
-  const accessToken = sessionStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem("accessToken");
 
   if (accessToken) {
     console.log("✅ accessToken 이미 있음");
@@ -44,14 +44,13 @@ export const initializeAuth = async () => {
   }
 
   try {
-    const newToken = await refreshAccessToken();
-    sessionStorage.setItem('accessToken', newToken);
+    const newAccessToken = await refreshAccessToken(); // <- 이미 만든 함수 사용
+    sessionStorage.setItem("accessToken", newAccessToken);
     console.log("🔁 초기화: AccessToken 재발급 성공");
   } catch (err) {
     console.warn("⚠️ 초기화 실패: refreshToken 없거나 만료됨");
   }
 };
-
 
 // 백엔드(API) Access Token 검증 요청
 export const validateAccessToken = async () => {

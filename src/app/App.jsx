@@ -18,7 +18,6 @@ function App() {
     initializeAuth(); // 조용히 accessToken 갱신 시도
   }, []);
 
-
   const renderContent = () => {
     switch (activeTab) {
       case 'map':

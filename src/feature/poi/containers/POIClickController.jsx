@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { usePOIChecker } from '../../auth/hooks/usePOIChecker'; // ✅ 훅으로 import!
+import { useLoginChecker } from '../../auth/hooks/useLoginChecker'; // ✅ 훅으로 import!
 import POIHandler from './POIHandler';
 import LoginForm from '../../auth/components/LoginForm';
 
@@ -11,7 +11,7 @@ const POIClickController = ({ mapRef }) => {
   };
 
   // ✅ POIChecker 훅 사용 (렌더링 X)
-  usePOIChecker(setIsLoggedIn);
+  useLoginChecker(setIsLoggedIn);
 
   // ✅ 디버깅 로그
   useEffect(() => {
