@@ -1,19 +1,3 @@
-const getClickedAddress = async (lat, lng) => {
-  return new Promise((resolve) => {
-    const geocoder = new kakao.maps.services.Geocoder();
-    geocoder.coord2Address(lng, lat, (result, status) => {
-      if (status === kakao.maps.services.Status.OK) {
-        const address =
-          result[0]?.road_address?.address_name || "주소 정보 없음";
-        resolve(address);
-      } else {
-        resolve("주소 정보 없음");
-      }
-    });
-  });
-};
-
-
 export const fetchPOIData = async (center, zoomLevel) => {
   return new Promise((resolve) => {
     const places = new kakao.maps.services.Places();
@@ -52,14 +36,14 @@ export const fetchPOIData = async (center, zoomLevel) => {
     // ? 8 이상일 경우 빈 배열 반환 
     const categoryCodes = getCategoriesByZoom(zoomLevel);
     if (categoryCodes.length === 0) {
-      console.log(`?? 줌 레벨 ${zoomLevel}: POI 검색 비활성화`);
+      console.log(`🔎 줌 레벨 ${zoomLevel}: POI 검색 비활성화`);
       resolve({ center, zoomLevel, allPOIs: [], nearestPOI: null });
       return;
     }
 
     // ? 반경 설정 
     const radius = getRadiusByZoom(zoomLevel);
-    console.log(`?? 현재 줌 레벨: ${zoomLevel}, 반경: ${radius}m, 허용된 카테고리: ${categoryCodes.join(", ")}`);
+    console.log(`🔎 현재 줌 레벨: ${zoomLevel}, 반경: ${radius}m, 허용된 카테고리: ${categoryCodes.join(", ")}`);
 
     // ? 클릭한 위치 반경 내 POI 검색 
     const searchPromises = categoryCodes.map(category =>
@@ -91,16 +75,15 @@ export const fetchPOIData = async (center, zoomLevel) => {
           return poiDistance < closest.distance ? { ...poi, distance: poiDistance } : closest;
         }, { ...allPOIs[0], distance: getDistance(centerLatLng, new kakao.maps.LatLng(parseFloat(allPOIs[0].y), parseFloat(allPOIs[0].x))) });
       } else { // ✅ POI가 없을 경우 기본 정보 구성
-        const address = await getClickedAddress(center.Lat, center.Lng);
         nearestPOI = {
           place_name: "커스텀 위치",
-          address_name: address,
+          address_name: `위도: ${center.Lat.toFixed(6)}, 경도: ${center.Lng.toFixed(6)}`,
           phone: "",
           category_group_name: "",
           distance: ""
         };
-      resolve({nearestPOI }); // ✅ nearestPOI만 반환
       }
+      resolve({nearestPOI }); // ✅ nearestPOI만 반환
     })
   })
 };
