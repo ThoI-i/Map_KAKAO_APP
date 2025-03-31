@@ -45,9 +45,6 @@ const POIDetailContent = ({ place, onClose }) => {
 
   return (
     <div className={styles.modalDetailWrapper} ref={contentRef} style={{ borderColor: selectedColor }}>
-      <div className={styles.modalResultDisplay} style={{ position: 'absolute', top: '10px', left: '-60px', backgroundColor: selectedColor }}>
-        {selectedIcon}
-      </div>
 
       <div className={styles.modalHeader}>
         <div
