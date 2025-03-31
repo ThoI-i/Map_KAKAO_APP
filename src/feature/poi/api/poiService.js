@@ -1,3 +1,19 @@
+const getClickedAddress = async (lat, lng) => {
+  return new Promise((resolve) => {
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.coord2Address(lng, lat, (result, status) => {
+      if (status === kakao.maps.services.Status.OK) {
+        const address =
+          result[0]?.road_address?.address_name || "주소 정보 없음";
+        resolve(address);
+      } else {
+        resolve("주소 정보 없음");
+      }
+    });
+  });
+};
+
+
 export const fetchPOIData = async (center, zoomLevel) => {
   return new Promise((resolve) => {
     const places = new kakao.maps.services.Places();
@@ -63,7 +79,7 @@ export const fetchPOIData = async (center, zoomLevel) => {
     );
 
     // ? POI 검색 결과 처리
-    Promise.all(searchPromises).then(results => {
+    Promise.all(searchPromises).then(async results => {
       let allPOIs = results.flat(); // ? 모든 POI 합치기
 
       // ? 가장 가까운 POI 찾기 추가
@@ -74,11 +90,19 @@ export const fetchPOIData = async (center, zoomLevel) => {
           const poiDistance = getDistance(centerLatLng, poiLatLng);
           return poiDistance < closest.distance ? { ...poi, distance: poiDistance } : closest;
         }, { ...allPOIs[0], distance: getDistance(centerLatLng, new kakao.maps.LatLng(parseFloat(allPOIs[0].y), parseFloat(allPOIs[0].x))) });
-      }
-
+      } else { // ✅ POI가 없을 경우 기본 정보 구성
+        const address = await getClickedAddress(center.Lat, center.Lng);
+        nearestPOI = {
+          place_name: "커스텀 위치",
+          address_name: address,
+          phone: "",
+          category_group_name: "",
+          distance: ""
+        };
       resolve({nearestPOI }); // ✅ nearestPOI만 반환
-    });
-  });
+      }
+    })
+  })
 };
 
 /**
@@ -87,6 +111,7 @@ export const fetchPOIData = async (center, zoomLevel) => {
 const getDistance = (pos1, pos2) => {
   const R = 6371e3; // 지구 반지름 (m)
   const lat1 = pos1.getLat() * (Math.PI / 180);
+
   const lat2 = pos2.getLat() * (Math.PI / 180);
   const deltaLat = (pos2.getLat() - pos1.getLat()) * (Math.PI / 180);
   const deltaLng = (pos2.getLng() - pos1.getLng()) * (Math.PI / 180);
