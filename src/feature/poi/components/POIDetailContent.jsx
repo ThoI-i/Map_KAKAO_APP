@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMarkerColor, setMarkerIcon } from '@/store/markerSlice';
+import styles from '../../../components/modal/Modal.module.css';
 
 const POIDetailContent = ({ place, onClose }) => {
   const dispatch = useDispatch();
