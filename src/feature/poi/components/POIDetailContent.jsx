@@ -99,9 +99,9 @@ const POIDetailContent = ({ place, onClose }) => {
       <div className={styles.modalBody}>
         <h2>{place.place_name}</h2>
         <p><strong>주소:</strong> {place.address_name}</p>
-        <p><strong>연락처:</strong> {place.phone || '-'}</p>
-        <p><strong>카테고리:</strong> {place.category_group_name || '-'}</p>
-        <p><strong>클릭한 지점과 거리:</strong> {place.distance ? `${place.distance}m` : '-'}</p>
+        <p><strong>연락처:</strong> {place.phone || ''}</p>
+        <p><strong>카테고리:</strong> {place.category_group_name || ''}</p>
+        <p><strong>클릭한 지점과 거리:</strong> {place.distance ? `${place.distance}m` : ''}</p>
       </div>
 
       <div className={styles.buttonRow}>
