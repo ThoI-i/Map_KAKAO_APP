@@ -1,7 +1,12 @@
-// ✅ POIHandler.jsx - 모달 렌더링 + 디버깅 추가 버전
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setClickedLocation } from "../../../store/mapSlice";
+import {
+  setNearestPOI,
+  clearNearestPOI,
+  openModal,
+  closeModal,
+} from "../../../store/poiSlice";
 import Modal from "../../../components/modal/Modal";
 import { fetchPOIData } from "../api/poiService";
 import CustomMarker from "../../map/marker/CustomMarker";
@@ -9,12 +14,10 @@ import POIDetailContent from "../components/POIDetailContent";
 
 const POIHandler = ({ mapRef }) => {
   const dispatch = useDispatch();
-
   const { clickedLat, clickedLng, clickedZoom } = useSelector(
     (state) => state.map
   );
-
-  const [selectedPOI, setSelectedPOI] = useState(null);
+  const { nearestPOI, isModalOpen } = useSelector((state) => state.poi);
   const geocoder = new kakao.maps.services.Geocoder();
 
   const handlePOIClick = async (mouseEvent) => {
@@ -25,34 +28,26 @@ const POIHandler = ({ mapRef }) => {
     const lng = mouseEvent.latLng.getLng();
     const zoom = map.getLevel();
 
-    console.log(`📍 클릭 위치: (${lat}, ${lng}), 줌 레벨: ${zoom}`);
-
     dispatch(setClickedLocation({ lat, lng, zoom }));
 
     geocoder.coord2Address(lng, lat, async (result, status) => {
       if (status === kakao.maps.services.Status.OK) {
-        let address = result[0]?.road_address?.address_name || "주소 정보 없음";
-
         const { nearestPOI } = await fetchPOIData({ Lat: lat, Lng: lng }, zoom);
-
-        // ✅ 디버깅 조건 추가
         if (nearestPOI) {
-          console.log("✅ 선택된 POI:", nearestPOI);
-          setSelectedPOI(nearestPOI);
-        } else {
-          console.warn("❌ nearestPOI 없음! setSelectedPOI 실행 안 됨");
+          dispatch(setNearestPOI(nearestPOI));
+          dispatch(openModal());
         }
       }
     });
   };
 
   const handleModalClose = () => {
-    setSelectedPOI(null);
+    dispatch(closeModal());
+    dispatch(clearNearestPOI());
     dispatch(setClickedLocation({ lat: null, lng: null, zoom: null }));
   };
 
   useEffect(() => {
-    console.log("🟢 [POIHandler] selectedPOI 상태:", selectedPOI);
     if (!mapRef.current) return;
     const map = mapRef.current;
     kakao.maps.event.addListener(map, "click", handlePOIClick);
@@ -60,7 +55,7 @@ const POIHandler = ({ mapRef }) => {
     return () => {
       kakao.maps.event.removeListener(map, "click", handlePOIClick);
     };
-  }, [mapRef, selectedPOI]);
+  }, [mapRef]);
 
   return (
     <>
@@ -71,9 +66,9 @@ const POIHandler = ({ mapRef }) => {
         />
       )}
 
-      {/* ✅ 모달 렌더링 추가 */}
-      <Modal visible={!!selectedPOI} onClose={handleModalClose}>
-        <POIDetailContent place={selectedPOI} onClose={handleModalClose} />
+      {/* ✅ Redux 상태 기반으로 Portal Modal 작동 */}
+      <Modal visible={isModalOpen && !!nearestPOI} onClose={handleModalClose}>
+        <POIDetailContent place={nearestPOI} onClose={handleModalClose} />
       </Modal>
     </>
   );

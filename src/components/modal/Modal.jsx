@@ -1,4 +1,4 @@
-// ✅ 공용 틀 유지용: components/modal/Modal.jsx
+// ✅ 공용 Portal 기반 Modal - Redux와 독립
 import ReactDOM from 'react-dom';
 import styles from './Modal.module.css';
 
@@ -9,13 +9,12 @@ const Modal = ({ visible, onClose, children }) => {
     <div className={styles.modalOverlay} onClick={onClose}>
       <div
         className={styles.modalContent}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()} // 클릭 버블링 방지
       >
         {children}
       </div>
     </div>,
-    document.body, // ✅ Portal로 이동
-    console.log("🟣 [Modal] visible:", visible, "children:", children)
+    document.body
   );
 };
 
