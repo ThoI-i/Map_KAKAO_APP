@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './LoginForm.module.css';
+import { login } from "../api/authService"; // ← authService에서 가져옴
 
 const LoginForm = ({ onSuccess, visible }) => {
   const [email, setEmail] = useState('');
@@ -12,40 +13,16 @@ const LoginForm = ({ onSuccess, visible }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-
-    try {
-      const response = await fetch('http://localhost:9000/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          emailOrNickname: email,
-          password: password,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        if (response.status === 404) {
-          setError('존재하지 않는 회원입니다.');
-        } else if (response.status === 401) {
-          setError('아이디, 비밀번호가 다릅니다.');
-        } else {
-          setError(`로그인에 실패했습니다: ${errorMessage}`);
-        }
-        return;
-      }
-
-      const data = await response.json();
-      sessionStorage.setItem('accessToken', data.accessToken);
+  
+    const success = await login(email, password);
+    if (success) {
       onSuccess?.();
-    } catch (err) {
+    } else {
       setError(`로그인 중 오류가 발생했어요 😢: ${err.message}`);
     }
   };
-
+   
+  
   // ✨ Portal로 렌더링할 JSX
   const formUI = (
     <div className={styles.loginOverlay}>
