@@ -10,25 +10,33 @@ export const login = async (emailOrNickname, password) => {
       body: JSON.stringify({ emailOrNickname, password }),
     });
 
-    const data = await res.json();
+    // ✅ 응답이 JSON인지 먼저 안전하게 확인
+    let data;
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      data = await res.json();
+    } else {
+      const text = await res.text();
+      throw new Error(`서버 오류: ${text}`);
+    }
 
+    // ✅ 상태 코드 확인
     if (!res.ok) {
-      throw new Error(data.error || "로그인 실패");
+      throw new Error(data?.error || "로그인 실패");
     }
 
     if (!data.accessToken) {
       throw new Error("accessToken이 응답에 포함되지 않았어요 😢");
     }
 
-    sessionStorage.setItem("accessToken", data.accessToken);
-    console.log("✅ 로그인 성공! Access Token 저장 완료");
-    return true;
+    return data;
+
   } catch (err) {
-    console.error("❌ 로그인 실패:", err.message);
-    alert("로그인 오류: " + err.message);
-    return false;
+    console.error("로그인 실패:", err);
+    throw err;
   }
 };
+
 
 // Refresh Token O / Access Token X(새로고침 시)
 /**
