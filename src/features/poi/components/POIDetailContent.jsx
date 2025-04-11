@@ -45,7 +45,7 @@ const POIDetailContent = ({ place, onClose }) => {
   if (!place) return null;
 
   return (
-    <div className={styles.modalDetailWrapper} ref={contentRef} style={{ borderColor: selectedColor }}>
+    <div className={styles.modalDetailWrapper} ref={contentRef} style={{ borderColor: selectedColor, "--shadow-color": selectedColor  }}>
 
       <div className={styles.modalHeader}>
         <div
