@@ -14,7 +14,7 @@
 .modalDetailWrapper {
   border: 4px solid transparent; /* ✅ 동적 border-color를 위한 기본값 설정 */
   border-radius: 10px;
-  padding: 16px;
+  padding: 20px;
   animation: borderPulse 3s infinite; /* ❓ 애니메이션 정의 필요 */
   transition: border-color 0.3s ease; /* ✅ 색상 전환 부드럽게 */
   box-shadow: 0 0 10px var(--shadow-color); /* ✅ 커스텀 CSS 변수로 쉐도우 색도 동적 처리 */
@@ -34,8 +34,8 @@
 
 .modalContent {
   background-color: rgba(0, 0, 0, 0.65);
-  padding: 20px;
   width: 400px;
+  border-radius: 10px;
   position: relative;
 }
 
